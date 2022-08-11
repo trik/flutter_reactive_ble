@@ -104,8 +104,11 @@ class FlutterReactiveBle {
         print,
       );
 
-      ReactiveBlePlatform.instance =
-          const ReactiveBleMobilePlatformFactory().create();
+      // ignore: unnecessary_null_comparison, prefer_conditional_assignment
+      if (ReactiveBlePlatform.instance == null) {
+        ReactiveBlePlatform.instance =
+            const ReactiveBleMobilePlatformFactory().create();
+      }
 
       _blePlatform = ReactiveBlePlatform.instance;
 
