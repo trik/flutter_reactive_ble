@@ -189,8 +189,9 @@ class _ServiceDiscoveryListState extends State<_ServiceDiscoveryList> {
     if (c.isIndicatable) {
       props.add("indicate");
     }
-
-    return props.join("\n");
+    // props.add("${c.descriptors.length} descriptors");
+    props.add(c.descriptors.map((d) => d.toString()).toList(growable: false).join(" "));
+    return props.join(", ");
   }
 
   Widget _characteristicTile(
@@ -203,6 +204,7 @@ class _ServiceDiscoveryListState extends State<_ServiceDiscoveryList> {
                       characteristicId: characteristic.characteristicId,
                       serviceId: characteristic.serviceId,
                       deviceId: deviceId),
+                  descriptors: characteristic.descriptors,
                 )),
         title: Text(
           '${characteristic.characteristicId}\n(${_charactisticsSummary(characteristic)})',

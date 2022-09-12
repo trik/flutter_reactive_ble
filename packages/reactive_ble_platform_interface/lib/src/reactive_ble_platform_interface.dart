@@ -135,7 +135,7 @@ abstract class ReactiveBlePlatform extends PlatformInterface {
         'writeCharacteristicWithResponse has not been implemented.');
   }
 
-  /// Perform writing a value to a specific characteristic without awaiting the
+  /// Perform writing a value to a specific descriptor without awaiting the
   /// acknowledgment from the peripheral.
   ///
   /// When implementing this operation on the platform make sure that it directly
@@ -148,17 +148,24 @@ abstract class ReactiveBlePlatform extends PlatformInterface {
         'writeCharacteristicWithoutResponse has not been implemented.');
   }
 
-  /// Perform writing a value to a specific descriptor without awaiting the
-  /// acknowledgment from the peripheral.
+  /// Performs service discovery on the peripheral and returns the discovered
+  /// services.
+  ///
+  /// This operation can only succeed when the host is `connected` with the
+  /// peripheral.
+  Future<List<int>> readDescriptor(QualifiedDescriptor descriptor) {
+    throw UnimplementedError('readDescriptor has not been implemented.');
+  }
+
+  /// Perform writing a value to a specific descriptor.
   ///
   /// When implementing this operation on the platform make sure that it directly
   /// returns a response to the dart layer when the command arrived.
-  Future<WriteDescriptorInfo> writeDescriptorWithoutResponse(
+  Future<WriteDescriptorInfo> writeDescriptor(
     QualifiedDescriptor descriptor,
     List<int> value,
   ) {
-    throw UnimplementedError(
-        'writeCharacteristicWithoutResponse has not been implemented.');
+    throw UnimplementedError('writeDescriptor has not been implemented.');
   }
 
   /// Starts subscribing to notifications for a specificied characteristic.

@@ -47,6 +47,10 @@ sealed class CharOperationResult
 data class CharOperationSuccessful(val deviceId: String, val value: List<Byte>) : CharOperationResult()
 data class CharOperationFailed(val deviceId: String, val errorMessage: String) : CharOperationResult()
 
+sealed class DescOperationResult
+data class DescOperationSuccessful(val deviceId: String, val value: List<Byte>) : DescOperationResult()
+data class DescOperationFailed(val deviceId: String, val errorMessage: String) : DescOperationResult()
+
 sealed class RequestConnectionPriorityResult
 data class RequestConnectionPrioritySuccess(val deviceId: String) : RequestConnectionPriorityResult()
 data class RequestConnectionPriorityFailed(val deviceId: String, val errorMessage: String) : RequestConnectionPriorityResult()

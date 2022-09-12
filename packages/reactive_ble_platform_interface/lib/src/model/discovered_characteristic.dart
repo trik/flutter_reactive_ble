@@ -1,11 +1,16 @@
-import 'package:meta/meta.dart';
+import 'package:collection/collection.dart';
+import 'package:functional_data/functional_data.dart';
+import 'package:reactive_ble_platform_interface/src/model/discovered_descriptor.dart';
 
 import 'uuid.dart';
 
+part 'discovered_characteristic.g.dart';
+//ignore_for_file: annotate_overrides
+
 /// Specific BLE characteristic for a BLE device characterised by [deviceId], [serviceId] and
 /// [characteristicId].
-@immutable
-class DiscoveredCharacteristic {
+@FunctionalData()
+class DiscoveredCharacteristic extends $DiscoveredCharacteristic {
   /// Unique uuid of the specific characteristic
   final Uuid characteristicId;
 
@@ -27,19 +32,13 @@ class DiscoveredCharacteristic {
     required this.isWritableWithoutResponse,
     required this.isNotifiable,
     required this.isIndicatable,
+    required this.descriptorIds,
+    required this.descriptors,
   });
 
-  @override
-  String toString() =>
-      "$runtimeType(characteristicId: $characteristicId, serviceId: $serviceId)";
+  @CustomEquality(DeepCollectionEquality())
+  final List<Uuid> descriptorIds;
 
-  @override
-  int get hashCode =>
-      (((17 * 37) + characteristicId.hashCode) * 37 + serviceId.hashCode) * 37;
-
-  @override
-  bool operator ==(dynamic other) =>
-      runtimeType == other.runtimeType &&
-      characteristicId == other.characteristicId &&
-      serviceId == other.serviceId;
+  @CustomEquality(DeepCollectionEquality())
+  final List<DiscoveredDescriptor> descriptors;
 }

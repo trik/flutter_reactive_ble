@@ -13,6 +13,10 @@ enum class CharacteristicErrorType(val code: Int) {
     UNKNOWN(0)
 }
 
+enum class DescriptorErrorType(val code: Int) {
+    UNKNOWN(0)
+}
+
 enum class NegotiateMtuErrorType(val code: Int) {
     UNKNOWN(0)
 }

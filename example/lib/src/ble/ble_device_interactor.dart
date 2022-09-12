@@ -8,19 +8,26 @@ class BleDeviceInteractor {
         bleDiscoverServices,
     required Future<List<int>> Function(QualifiedCharacteristic characteristic)
         readCharacteristic,
+    required Future<List<int>> Function(QualifiedDescriptor descriptor)
+        readDescriptor,
     required Future<void> Function(QualifiedCharacteristic characteristic,
             {required List<int> value})
         writeWithResponse,
     required Future<void> Function(QualifiedCharacteristic characteristic,
             {required List<int> value})
         writeWithOutResponse,
+    required Future<void> Function(QualifiedDescriptor descriptor,
+            {required List<int> value})
+        writeDescriptor,
     required void Function(String message) logMessage,
     required Stream<List<int>> Function(QualifiedCharacteristic characteristic)
         subscribeToCharacteristic,
   })  : _bleDiscoverServices = bleDiscoverServices,
         _readCharacteristic = readCharacteristic,
+        _readDescriptor = readDescriptor,
         _writeWithResponse = writeWithResponse,
         _writeWithoutResponse = writeWithOutResponse,
+        _writeDescriptor = writeDescriptor,
         _subScribeToCharacteristic = subscribeToCharacteristic,
         _logMessage = logMessage;
 
@@ -30,11 +37,17 @@ class BleDeviceInteractor {
   final Future<List<int>> Function(QualifiedCharacteristic characteristic)
       _readCharacteristic;
 
+  final Future<List<int>> Function(QualifiedDescriptor descriptor)
+      _readDescriptor;
+
   final Future<void> Function(QualifiedCharacteristic characteristic,
       {required List<int> value}) _writeWithResponse;
 
   final Future<void> Function(QualifiedCharacteristic characteristic,
       {required List<int> value}) _writeWithoutResponse;
+
+  final Future<void> Function(QualifiedDescriptor descriptor,
+      {required List<int> value}) _writeDescriptor;
 
   final Stream<List<int>> Function(QualifiedCharacteristic characteristic)
       _subScribeToCharacteristic;
@@ -70,6 +83,23 @@ class BleDeviceInteractor {
     }
   }
 
+  Future<List<int>> readDescriptor(QualifiedDescriptor descriptor) async {
+    try {
+      final result = await _readDescriptor(descriptor);
+
+      _logMessage(
+          'Read descriptor ${descriptor.descriptorId}: value = $result');
+      return result;
+    } on Exception catch (e, s) {
+      _logMessage(
+        'Error occured when reading descriptor ${descriptor.descriptorId} : $e',
+      );
+      // ignore: avoid_print
+      print(s);
+      rethrow;
+    }
+  }
+
   Future<void> writeCharacterisiticWithResponse(
       QualifiedCharacteristic characteristic, List<int> value) async {
     try {
@@ -95,6 +125,22 @@ class BleDeviceInteractor {
     } on Exception catch (e, s) {
       _logMessage(
         'Error occured when writing ${characteristic.characteristicId} : $e',
+      );
+      // ignore: avoid_print
+      print(s);
+      rethrow;
+    }
+  }
+
+  Future<void> writeDescriptor(
+      QualifiedDescriptor descriptor, List<int> value) async {
+    try {
+      await _writeDescriptor(descriptor, value: value);
+      _logMessage(
+          'Write descriptor value: $value to descriptor ${descriptor.descriptorId}');
+    } on Exception catch (e, s) {
+      _logMessage(
+        'Error occured when writing descriptor ${descriptor.descriptorId} : $e',
       );
       // ignore: avoid_print
       print(s);

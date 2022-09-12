@@ -205,7 +205,7 @@ void main() {
       });
     });
 
-    group('Write characteristic with response', () {
+    group(' Write characteristic with response', () {
       QualifiedCharacteristic characteristic;
       const value = [0, 1];
       late pb.WriteCharacteristicRequest request;

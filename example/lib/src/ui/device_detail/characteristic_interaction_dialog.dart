@@ -3,19 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:flutter_reactive_ble_example/src/ble/ble_device_interactor.dart';
+import 'package:flutter_reactive_ble_example/src/ui/device_detail/descriptor_interaction_dialog.dart';
 import 'package:provider/provider.dart';
 
 class CharacteristicInteractionDialog extends StatelessWidget {
   const CharacteristicInteractionDialog({
     required this.characteristic,
+    required this.descriptors,
     Key? key,
   }) : super(key: key);
   final QualifiedCharacteristic characteristic;
+  final List<DiscoveredDescriptor> descriptors;
 
   @override
   Widget build(BuildContext context) => Consumer<BleDeviceInteractor>(
       builder: (context, interactor, _) => _CharacteristicInteractionDialog(
             characteristic: characteristic,
+            descriptors: descriptors,
             readCharacteristic: interactor.readCharacteristic,
             writeWithResponse: interactor.writeCharacterisiticWithResponse,
             writeWithoutResponse:
@@ -27,6 +31,7 @@ class CharacteristicInteractionDialog extends StatelessWidget {
 class _CharacteristicInteractionDialog extends StatefulWidget {
   const _CharacteristicInteractionDialog({
     required this.characteristic,
+    required this.descriptors,
     required this.readCharacteristic,
     required this.writeWithResponse,
     required this.writeWithoutResponse,
@@ -35,6 +40,7 @@ class _CharacteristicInteractionDialog extends StatefulWidget {
   }) : super(key: key);
 
   final QualifiedCharacteristic characteristic;
+  final List<DiscoveredDescriptor> descriptors;
   final Future<List<int>> Function(QualifiedCharacteristic characteristic)
       readCharacteristic;
   final Future<void> Function(
@@ -184,6 +190,49 @@ class _CharacteristicInteractionDialogState
         ),
       ];
 
+  String _descriptorsSummary(DiscoveredDescriptor d) {
+    final props = <String>[];
+    if (d.isReadable) {
+      props.add("read");
+    }
+    if (d.isWritable) {
+      props.add("write");
+    }
+
+    return props.join(", ");
+  }
+
+  Widget _descriptorTile(DiscoveredDescriptor descriptor, String deviceId) =>
+      ListTile(
+        onTap: () => showDialog<void>(
+            context: context,
+            builder: (context) => DescriptorInteractionDialog(
+              descriptor: QualifiedDescriptor(
+                  descriptorId: descriptor.descriptorId,
+                  characteristicId: descriptor.characteristicId,
+                  serviceId: descriptor.serviceId,
+                  deviceId: deviceId),
+            )),
+        title: Text(
+          '${descriptor.descriptorId}\n(${_descriptorsSummary(descriptor)})',
+          style: const TextStyle(
+            fontSize: 14,
+          ),
+        ),
+      );
+
+  List<Widget> get descriptorsSection => [
+    sectionHeader('Descriptors'),
+    ListView.builder(
+      shrinkWrap: true,
+      itemBuilder: (context, index) => _descriptorTile(
+        widget.descriptors[index],
+        widget.characteristic.deviceId,
+      ),
+      itemCount: widget.descriptors.length,
+    ),
+  ];
+
   Widget get divider => const Padding(
         padding: EdgeInsets.symmetric(vertical: 12.0),
         child: Divider(thickness: 2.0),
@@ -212,6 +261,8 @@ class _CharacteristicInteractionDialogState
               ...writeSection,
               divider,
               ...subscribeSection,
+              divider,
+              ...descriptorsSection,
               divider,
               Align(
                 alignment: Alignment.bottomRight,

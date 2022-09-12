@@ -1,6 +1,7 @@
 package com.signify.hue.flutterreactiveble.converters
 
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothGattService
 import com.google.protobuf.ByteString
 import com.polidea.rxandroidble2.RxBleDeviceServices
@@ -16,6 +17,7 @@ import com.signify.hue.flutterreactiveble.model.CharacteristicErrorType
 import com.signify.hue.flutterreactiveble.model.ClearGattCacheErrorType
 import com.signify.hue.flutterreactiveble.model.ConnectionErrorType
 import com.signify.hue.flutterreactiveble.model.ConnectionState
+import com.signify.hue.flutterreactiveble.model.DescriptorErrorType
 import com.signify.hue.flutterreactiveble.model.NegotiateMtuErrorType
 import com.signify.hue.flutterreactiveble.model.ScanErrorType
 import java.util.UUID
@@ -89,6 +91,19 @@ class ProtobufMessageConverter {
                 .build()
     }
 
+    fun convertDescriptorInfo(
+            request: pb.DescriptorAddress,
+            value: ByteArray
+    ): pb.DescriptorValueInfo {
+
+        val descriptorAddress = createDescriptorAddress(request)
+
+        return pb.DescriptorValueInfo.newBuilder()
+                .setDescriptor(descriptorAddress)
+                .setValue(ByteString.copyFrom(value))
+                .build()
+    }
+
     fun convertCharacteristicError(
             request: pb.CharacteristicAddress,
             error: String?
@@ -100,6 +115,21 @@ class ProtobufMessageConverter {
 
         return pb.CharacteristicValueInfo.newBuilder()
                 .setCharacteristic(characteristicAdress)
+                .setFailure(failure)
+                .build()
+    }
+
+    fun convertDescriptorError(
+            request: pb.DescriptorAddress,
+            error: String?
+    ): pb.DescriptorValueInfo {
+        val descriptorAddress = createDescriptorAddress(request)
+        val failure = pb.GenericFailure.newBuilder()
+                .setCode(DescriptorErrorType.UNKNOWN.code)
+                .setMessage(error ?: "Unknown error")
+
+        return pb.DescriptorValueInfo.newBuilder()
+                .setDescriptor(descriptorAddress)
                 .setFailure(failure)
                 .build()
     }
@@ -194,23 +224,37 @@ class ProtobufMessageConverter {
     private fun fromBluetoothGattService(gattService: BluetoothGattService): pb.DiscoveredService {
         return pb.DiscoveredService.newBuilder()
                 .setServiceUuid(createUuidFromParcelUuid(gattService.uuid))
-                .addAllCharacteristicUuids(gattService.characteristics.map { createUuidFromParcelUuid(it.uuid) })
-                .addAllCharacteristics(gattService.characteristics.map {
-                    val prop = it.properties
+                .addAllCharacteristicUuids(gattService.characteristics.map { char -> createUuidFromParcelUuid(char.uuid) })
+                .addAllCharacteristics(gattService.characteristics.map { char ->
+                    val prop = char.properties
                     val readable = (prop and BluetoothGattCharacteristic.PROPERTY_READ) > 0
                     val write = (prop and BluetoothGattCharacteristic.PROPERTY_WRITE) > 0
                     val writeNoResp = (prop and BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) > 0
                     val notify = (prop and BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0
                     val indicate = (prop and BluetoothGattCharacteristic.PROPERTY_INDICATE) > 0
 
-                    pb.DiscoveredCharacteristic.newBuilder()
-                            .setCharacteristicId(createUuidFromParcelUuid(it.uuid))
-                            .setServiceId(createUuidFromParcelUuid(it.service.uuid))
+                        pb.DiscoveredCharacteristic.newBuilder()
+                                .setCharacteristicId(createUuidFromParcelUuid(char.uuid))
+                            .setServiceId(createUuidFromParcelUuid(char.service.uuid))
                             .setIsReadable(readable)
                             .setIsWritableWithResponse(write)
                             .setIsWritableWithoutResponse(writeNoResp)
                             .setIsNotifiable(notify)
                             .setIsIndicatable(indicate)
+                            .addAllDescriptorUuids(char.descriptors.map { desc -> createUuidFromParcelUuid(desc.uuid) })
+                            .addAllDescriptors(char.descriptors.map {desc ->
+                                val descProps = desc.permissions;
+                                val readDesc = (descProps and BluetoothGattDescriptor.PERMISSION_READ) > 0;
+                                val writeDesc = (descProps and BluetoothGattDescriptor.PERMISSION_WRITE) > 0;
+
+                                pb.DiscoveredDescriptor.newBuilder()
+                                        .setDescriptorId(createUuidFromParcelUuid(desc.uuid))
+                                        .setCharacteristicId(createUuidFromParcelUuid(desc.characteristic.uuid))
+                                        .setServiceId(createUuidFromParcelUuid(desc.characteristic.service.uuid))
+                                        .setIsReadable(readDesc)
+                                        .setIsWritable(writeDesc)
+                                        .build()
+                            })
                             .build()
                 })
                 .addAllIncludedServices(gattService.includedServices.map { convertInternalService(it) })
@@ -234,6 +278,15 @@ class ProtobufMessageConverter {
                 .setDeviceId(request.deviceId)
                 .setServiceUuid(request.serviceUuid)
                 .setCharacteristicUuid(request.characteristicUuid)
+    }
+
+    private fun createDescriptorAddress(request: pb.DescriptorAddress):
+            pb.DescriptorAddress.Builder? {
+        return pb.DescriptorAddress.newBuilder()
+                .setDeviceId(request.deviceId)
+                .setServiceUuid(request.serviceUuid)
+                .setCharacteristicUuid(request.characteristicUuid)
+                .setDescriptorUuid(request.descriptorUuid)
     }
 
     private fun createServiceDataEntry(serviceData: Map<UUID, ByteArray>): List<pb.ServiceDataEntry> {

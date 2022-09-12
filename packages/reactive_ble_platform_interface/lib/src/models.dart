@@ -4,6 +4,7 @@ export './model/clear_gatt_cache_error.dart';
 export './model/connection_priority.dart';
 export './model/connection_state_update.dart';
 export './model/discovered_characteristic.dart';
+export './model/discovered_descriptor.dart';
 export './model/discovered_device.dart';
 export './model/discovered_service.dart';
 export './model/generic_failure.dart';

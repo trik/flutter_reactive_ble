@@ -23,6 +23,7 @@ interface BleClient {
     fun discoverServices(deviceId: String): Single<RxBleDeviceServices>
     fun clearGattCache(deviceId: String): Completable
     fun readCharacteristic(deviceId: String, characteristic: UUID): Single<CharOperationResult>
+    fun readDescriptor(deviceId: String, service: UUID, characteristic: UUID, descriptor: UUID): Single<DescOperationResult>
     fun setupNotification(deviceId: String, characteristic: UUID): Observable<ByteArray>
     fun writeCharacteristicWithResponse(
         deviceId: String,
@@ -34,13 +35,13 @@ interface BleClient {
         characteristic: UUID,
         value: ByteArray
     ): Single<CharOperationResult>
-    fun writeDescriptorWithoutResponse(
+    fun writeDescriptor(
         deviceId: String,
         serviceId: UUID,
         characteristic: UUID,
         descriptor: UUID,
         value: ByteArray
-    ): Single<CharOperationResult>
+    ): Single<DescOperationResult>
     fun negotiateMtuSize(deviceId: String, size: Int): Single<MtuNegotiateResult>
     fun observeBleStatus(): Observable<BleStatus>
     fun requestConnectionPriority(deviceId: String, priority: ConnectionPriority):

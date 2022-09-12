@@ -60,6 +60,12 @@ message CharacteristicValueInfo {
     GenericFailure failure = 3;
 }
 
+message DescriptorValueInfo {
+    DescriptorAddress descriptor = 1;
+    bytes value = 2;
+    GenericFailure failure = 3;
+}
+
 message WriteCharacteristicRequest {
     CharacteristicAddress characteristic = 1;
     bytes value = 2;
@@ -68,6 +74,10 @@ message WriteCharacteristicRequest {
 message WriteCharacteristicInfo {
     CharacteristicAddress characteristic = 1;
     GenericFailure failure = 3;
+}
+
+message ReadDescriptorRequest {
+    DescriptorAddress descriptor = 1;
 }
 
 message WriteDescriptorRequest {
@@ -156,6 +166,16 @@ message DiscoveredCharacteristic {
     bool isWritableWithoutResponse = 5;
     bool isNotifiable = 6;
     bool isIndicatable = 7;
+    repeated Uuid descriptorUuids = 8;
+    repeated DiscoveredDescriptor descriptors = 9;
+}
+
+message DiscoveredDescriptor {
+    Uuid descriptorId = 1;
+    Uuid characteristicId = 2;
+    Uuid serviceId = 3;
+    bool isReadable = 4;
+    bool isWritable = 5;
 }
 
 message Uuid {

@@ -26,8 +26,10 @@ void main() {
   final _serviceDiscoverer = BleDeviceInteractor(
     bleDiscoverServices: _ble.discoverServices,
     readCharacteristic: _ble.readCharacteristic,
+    readDescriptor: _ble.readDescriptor,
     writeWithResponse: _ble.writeCharacteristicWithResponse,
     writeWithOutResponse: _ble.writeCharacteristicWithoutResponse,
+    writeDescriptor: _ble.writeDescriptor,
     subscribeToCharacteristic: _ble.subscribeToCharacteristic,
     logMessage: _bleLogger.addToLog,
   );

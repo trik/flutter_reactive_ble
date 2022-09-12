@@ -238,7 +238,18 @@ class ProtobufConverterImpl implements ProtobufConverter {
                 isWritableWithResponse: c.isWritableWithResponse,
                 isWritableWithoutResponse: c.isWritableWithoutResponse,
                 isNotifiable: c.isNotifiable,
-                isIndicatable: c.isIndicatable))
+                isIndicatable: c.isIndicatable,
+                descriptorIds: c.descriptorUuids
+                    .map((d) => Uuid(d.data))
+                    .toList(growable: false),
+                descriptors: c.descriptors
+                    .map((d) => DiscoveredDescriptor(
+                        descriptorId: Uuid(d.descriptorId.data),
+                        characteristicId: Uuid(d.characteristicId.data),
+                        serviceId: Uuid(d.serviceId.data),
+                        isReadable: d.isReadable,
+                        isWritable: d.isWritable))
+                    .toList(growable: false)))
             .toList(growable: false),
         includedServices: service.includedServices
             .map(_convertService)

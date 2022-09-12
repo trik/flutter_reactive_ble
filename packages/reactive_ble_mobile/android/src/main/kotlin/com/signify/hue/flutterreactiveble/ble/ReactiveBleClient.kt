@@ -174,6 +174,36 @@ open class ReactiveBleClient(private val context: Context) : BleClient {
             }
         }.first(CharOperationFailed(deviceId, "read char failed"))
 
+    override fun readDescriptor(
+            deviceId: String,
+            service: UUID,
+            characteristic: UUID,
+            descriptor: UUID
+    ): Single<DescOperationResult> =
+            getConnection(deviceId).flatMapSingle<DescOperationResult> { connectionResult ->
+                when (connectionResult) {
+                    is EstablishedConnection ->
+                        connectionResult.rxConnection.readDescriptor(service, characteristic, descriptor)
+                                /*
+                                On Android7 the ble stack frequently gives incorrectly
+                                the error GAT_AUTH_FAIL(137) when reading char that will establish
+                                the bonding with the peripheral. By retrying the operation once we
+                                deviate between this flaky one time error and real auth failed cases
+                                */
+                                .retry(1) { Build.VERSION.SDK_INT < Build.VERSION_CODES.O }
+                                .map { value ->
+                                    DescOperationSuccessful(deviceId, value.asList())
+                                }
+                    is EstablishConnectionFailure ->
+                        Single.just(
+                                DescOperationFailed(
+                                        deviceId,
+                                        "failed to connect ${connectionResult.errorMessage}"
+                                )
+                        )
+                }
+            }.first(DescOperationFailed(deviceId, "read desc failed"))
+
     override fun writeCharacteristicWithResponse(
         deviceId: String,
         characteristic: UUID,
@@ -199,30 +229,30 @@ open class ReactiveBleClient(private val context: Context) : BleClient {
             RxBleConnection::writeCharWithoutResponse
         )
 
-    override fun writeDescriptorWithoutResponse(
+    override fun writeDescriptor(
         deviceId: String,
         serviceId: UUID,
         characteristic: UUID,
         descriptor: UUID,
         value: ByteArray
-    ): Single<CharOperationResult> {
+    ): Single<DescOperationResult> {
         return getConnection(deviceId)
-            .flatMapSingle<CharOperationResult> { connectionResult ->
+            .flatMapSingle<DescOperationResult> { connectionResult ->
                 when (connectionResult) {
                     is EstablishedConnection -> {
                         connectionResult.rxConnection.writeDescriptor(serviceId, characteristic, descriptor, value)
-                            .andThen(Single.just(CharOperationSuccessful(deviceId, value.asList())))
+                            .andThen(Single.just(DescOperationSuccessful(deviceId, value.asList())))
                     }
                     is EstablishConnectionFailure -> {
                         Single.just(
-                            CharOperationFailed(
+                            DescOperationFailed(
                                 deviceId,
                                 "failed to connect ${connectionResult.errorMessage}"
                             )
                         )
                     }
                 }
-            }.first(CharOperationFailed(deviceId, "Writechar timed-out"))
+            }.first(DescOperationFailed(deviceId, "Write desc timed-out"))
 
     }
 

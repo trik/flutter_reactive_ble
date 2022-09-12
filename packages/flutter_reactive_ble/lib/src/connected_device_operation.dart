@@ -6,6 +6,8 @@ abstract class ConnectedDeviceOperation {
 
   Future<List<int>> readCharacteristic(QualifiedCharacteristic characteristic);
 
+  Future<List<int>> readDescriptor(QualifiedDescriptor descriptor);
+
   Future<void> writeCharacteristicWithResponse(
     QualifiedCharacteristic characteristic, {
     required List<int> value,
@@ -16,7 +18,7 @@ abstract class ConnectedDeviceOperation {
     required List<int> value,
   });
 
-  Future<void> writeDescriptorWithoutResponse(
+  Future<void> writeDescriptor(
     QualifiedDescriptor descriptor, {
     required List<int> value,
   });
@@ -58,6 +60,10 @@ class ConnectedDeviceOperationImpl implements ConnectedDeviceOperation {
   }
 
   @override
+  Future<List<int>> readDescriptor(QualifiedDescriptor descriptor) =>
+      _blePlatform.readDescriptor(descriptor);
+
+  @override
   Future<void> writeCharacteristicWithResponse(
     QualifiedCharacteristic characteristic, {
     required List<int> value,
@@ -76,10 +82,10 @@ class ConnectedDeviceOperationImpl implements ConnectedDeviceOperation {
           .then((info) => info.result.dematerialize());
 
   @override
-  Future<void> writeDescriptorWithoutResponse(QualifiedDescriptor descriptor,
+  Future<void> writeDescriptor(QualifiedDescriptor descriptor,
           {required List<int> value}) =>
       _blePlatform
-          .writeDescriptorWithoutResponse(descriptor, value)
+          .writeDescriptor(descriptor, value)
           .then((info) => info.result.dematerialize());
 
   @override

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -105,8 +106,9 @@ class FlutterReactiveBle {
         print,
       );
 
-      // ignore: unnecessary_null_comparison, prefer_conditional_assignment
-      if (ReactiveBlePlatform.instance == null) {
+      try {
+        ReactiveBlePlatform.instance;
+      } on Error catch (e) { // ignore: avoid_catching_errors
         ReactiveBlePlatform.instance =
             const ReactiveBleMobilePlatformFactory().create();
       }
@@ -195,12 +197,23 @@ class FlutterReactiveBle {
     );
   }
 
+  /// Reads the value of the specified descriptor.
+  ///
+  /// The returned future completes with an error in case of a failure during reading.
+  Future<List<int>> readDescriptor(QualifiedDescriptor descriptor) async {
+    await initialize();
+    return _connectedDeviceOperator.readDescriptor(descriptor);
+  }
+
+  /// Writes a value to the specified descriptor.
+  ///
+  /// The returned future completes with an error in case of a failure during writing.
   Future<void> writeDescriptor(
     QualifiedDescriptor descriptor, {
     required List<int> value,
   }) async {
     await initialize();
-    return _connectedDeviceOperator.writeDescriptorWithoutResponse(
+    return _connectedDeviceOperator.writeDescriptor(
       descriptor,
       value: value,
     );

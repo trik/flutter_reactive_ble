@@ -30,9 +30,10 @@ class PluginController {
             "clearGattCache" to this::clearGattCache,
             "disconnectFromDevice" to this::disconnectFromDevice,
             "readCharacteristic" to this::readCharacteristic,
+            "readDescriptor" to this::readDescriptor,
             "writeCharacteristicWithResponse" to this::writeCharacteristicWithResponse,
             "writeCharacteristicWithoutResponse" to this::writeCharacteristicWithoutResponse,
-            "writeDescriptorWithoutResponse" to this::writeDescriptorWithoutResponse,
+            "writeDescriptor" to this::writeDescriptor,
             "readNotifications" to this::readNotifications,
             "stopNotifications" to this::stopNotifications,
             "negotiateMtuSize" to this::negotiateMtuSize,
@@ -171,6 +172,47 @@ class PluginController {
                 .discard()
     }
 
+    private fun readDescriptor(call: MethodCall, result: Result) {
+        val readDescMessage = pb.ReadDescriptorRequest.parseFrom(call.arguments as ByteArray)
+        val service = uuidConverter.uuidFromByteArray(readDescMessage.descriptor.serviceUuid.data.toByteArray())
+        val characteristic = uuidConverter.uuidFromByteArray(readDescMessage.descriptor.characteristicUuid.data.toByteArray())
+        val descriptor = uuidConverter.uuidFromByteArray(readDescMessage.descriptor.descriptorUuid.data.toByteArray())
+
+        bleClient.readDescriptor(
+                readDescMessage.descriptor.deviceId, service, characteristic, descriptor
+        )
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { descResult ->
+                            when (descResult) {
+                                is com.signify.hue.flutterreactiveble.ble.DescOperationSuccessful -> {
+                                    val descInfo = protoConverter.convertDescriptorInfo(
+                                            readDescMessage.descriptor,
+                                            descResult.value.toByteArray()
+                                    ).toByteArray()
+                                    result.success(descInfo)
+                                }
+                                is com.signify.hue.flutterreactiveble.ble.DescOperationFailed -> {
+                                    protoConverter.convertDescriptorError(readDescMessage.descriptor,
+                                            "Failed to connect")
+                                    result.error(
+                                            "read_descriptor_error",
+                                            descResult.errorMessage, null)
+                                }
+                            }
+                        },
+                        { throwable ->
+                            protoConverter.convertDescriptorError(
+                                    readDescMessage.descriptor,
+                                    throwable.message)
+                            result.error(
+                                    "read_descriptor_error",
+                                    throwable?.message ?: "Failure", null)
+                        }
+                )
+                .discard()
+    }
+
     private fun writeCharacteristicWithResponse(call: MethodCall, result: Result) {
         executeWriteAndPropagateResultToChannel(call, result, com.signify.hue.flutterreactiveble.ble.BleClient::writeCharacteristicWithResponse)
     }
@@ -179,9 +221,9 @@ class PluginController {
         executeWriteAndPropagateResultToChannel(call, result, com.signify.hue.flutterreactiveble.ble.BleClient::writeCharacteristicWithoutResponse)
     }
 
-    private fun writeDescriptorWithoutResponse(call: MethodCall, result: Result) {
+    private fun writeDescriptor(call: MethodCall, result: Result) {
         val writeDescriptorMessage = pb.WriteDescriptorRequest.parseFrom(call.arguments as ByteArray)
-        bleClient.writeDescriptorWithoutResponse(
+        bleClient.writeDescriptor(
             writeDescriptorMessage.descriptor.deviceId,
             uuidConverter.uuidFromByteArray(writeDescriptorMessage.descriptor.serviceUuid.data.toByteArray()),
             uuidConverter.uuidFromByteArray(writeDescriptorMessage.descriptor.characteristicUuid.data.toByteArray()),
@@ -190,11 +232,11 @@ class PluginController {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ operationResult ->
                 when (operationResult) {
-                    is com.signify.hue.flutterreactiveble.ble.CharOperationSuccessful -> {
+                    is com.signify.hue.flutterreactiveble.ble.DescOperationSuccessful -> {
                         result.success(protoConverter.convertWriteDescriptorInfo(writeDescriptorMessage,
                             null).toByteArray())
                     }
-                    is com.signify.hue.flutterreactiveble.ble.CharOperationFailed -> {
+                    is com.signify.hue.flutterreactiveble.ble.DescOperationFailed -> {
                         result.success(protoConverter.convertWriteDescriptorInfo(writeDescriptorMessage,
                             operationResult.errorMessage).toByteArray())
                     }

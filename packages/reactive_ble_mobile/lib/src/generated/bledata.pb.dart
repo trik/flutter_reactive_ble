@@ -3,7 +3,7 @@
 //  source: bledata.proto
 //
 // @dart = 2.12
-// ignore_for_file: annotate_overrides,camel_case_types,unnecessary_const,non_constant_identifier_names,library_prefixes,unused_import,unused_shown_name,return_of_invalid_type,unnecessary_this,prefer_final_fields
+// ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
 
 import 'dart:core' as $core;
 
@@ -722,6 +722,85 @@ class CharacteristicValueInfo extends $pb.GeneratedMessage {
   GenericFailure ensureFailure() => $_ensure(2);
 }
 
+class DescriptorValueInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'DescriptorValueInfo', createEmptyInstance: create)
+    ..aOM<DescriptorAddress>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'descriptor', subBuilder: DescriptorAddress.create)
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value', $pb.PbFieldType.OY)
+    ..aOM<GenericFailure>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'failure', subBuilder: GenericFailure.create)
+    ..hasRequiredFields = false
+  ;
+
+  DescriptorValueInfo._() : super();
+  factory DescriptorValueInfo({
+    DescriptorAddress? descriptor,
+    $core.List<$core.int>? value,
+    GenericFailure? failure,
+  }) {
+    final _result = create();
+    if (descriptor != null) {
+      _result.descriptor = descriptor;
+    }
+    if (value != null) {
+      _result.value = value;
+    }
+    if (failure != null) {
+      _result.failure = failure;
+    }
+    return _result;
+  }
+  factory DescriptorValueInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DescriptorValueInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DescriptorValueInfo clone() => DescriptorValueInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DescriptorValueInfo copyWith(void Function(DescriptorValueInfo) updates) => super.copyWith((message) => updates(message as DescriptorValueInfo)) as DescriptorValueInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static DescriptorValueInfo create() => DescriptorValueInfo._();
+  DescriptorValueInfo createEmptyInstance() => create();
+  static $pb.PbList<DescriptorValueInfo> createRepeated() => $pb.PbList<DescriptorValueInfo>();
+  @$core.pragma('dart2js:noInline')
+  static DescriptorValueInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DescriptorValueInfo>(create);
+  static DescriptorValueInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  DescriptorAddress get descriptor => $_getN(0);
+  @$pb.TagNumber(1)
+  set descriptor(DescriptorAddress v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasDescriptor() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDescriptor() => clearField(1);
+  @$pb.TagNumber(1)
+  DescriptorAddress ensureDescriptor() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get value => $_getN(1);
+  @$pb.TagNumber(2)
+  set value($core.List<$core.int> v) { $_setBytes(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasValue() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearValue() => clearField(2);
+
+  @$pb.TagNumber(3)
+  GenericFailure get failure => $_getN(2);
+  @$pb.TagNumber(3)
+  set failure(GenericFailure v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasFailure() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFailure() => clearField(3);
+  @$pb.TagNumber(3)
+  GenericFailure ensureFailure() => $_ensure(2);
+}
+
 class WriteCharacteristicRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'WriteCharacteristicRequest', createEmptyInstance: create)
     ..aOM<CharacteristicAddress>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'characteristic', subBuilder: CharacteristicAddress.create)
@@ -848,6 +927,55 @@ class WriteCharacteristicInfo extends $pb.GeneratedMessage {
   void clearFailure() => clearField(3);
   @$pb.TagNumber(3)
   GenericFailure ensureFailure() => $_ensure(1);
+}
+
+class ReadDescriptorRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReadDescriptorRequest', createEmptyInstance: create)
+    ..aOM<DescriptorAddress>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'descriptor', subBuilder: DescriptorAddress.create)
+    ..hasRequiredFields = false
+  ;
+
+  ReadDescriptorRequest._() : super();
+  factory ReadDescriptorRequest({
+    DescriptorAddress? descriptor,
+  }) {
+    final _result = create();
+    if (descriptor != null) {
+      _result.descriptor = descriptor;
+    }
+    return _result;
+  }
+  factory ReadDescriptorRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ReadDescriptorRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ReadDescriptorRequest clone() => ReadDescriptorRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ReadDescriptorRequest copyWith(void Function(ReadDescriptorRequest) updates) => super.copyWith((message) => updates(message as ReadDescriptorRequest)) as ReadDescriptorRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ReadDescriptorRequest create() => ReadDescriptorRequest._();
+  ReadDescriptorRequest createEmptyInstance() => create();
+  static $pb.PbList<ReadDescriptorRequest> createRepeated() => $pb.PbList<ReadDescriptorRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ReadDescriptorRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReadDescriptorRequest>(create);
+  static ReadDescriptorRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  DescriptorAddress get descriptor => $_getN(0);
+  @$pb.TagNumber(1)
+  set descriptor(DescriptorAddress v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasDescriptor() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDescriptor() => clearField(1);
+  @$pb.TagNumber(1)
+  DescriptorAddress ensureDescriptor() => $_ensure(0);
 }
 
 class WriteDescriptorRequest extends $pb.GeneratedMessage {
@@ -1806,6 +1934,8 @@ class DiscoveredCharacteristic extends $pb.GeneratedMessage {
     ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isWritableWithoutResponse', protoName: 'isWritableWithoutResponse')
     ..aOB(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isNotifiable', protoName: 'isNotifiable')
     ..aOB(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isIndicatable', protoName: 'isIndicatable')
+    ..pc<Uuid>(8, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'descriptorUuids', $pb.PbFieldType.PM, protoName: 'descriptorUuids', subBuilder: Uuid.create)
+    ..pc<DiscoveredDescriptor>(9, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'descriptors', $pb.PbFieldType.PM, subBuilder: DiscoveredDescriptor.create)
     ..hasRequiredFields = false
   ;
 
@@ -1818,6 +1948,8 @@ class DiscoveredCharacteristic extends $pb.GeneratedMessage {
     $core.bool? isWritableWithoutResponse,
     $core.bool? isNotifiable,
     $core.bool? isIndicatable,
+    $core.Iterable<Uuid>? descriptorUuids,
+    $core.Iterable<DiscoveredDescriptor>? descriptors,
   }) {
     final _result = create();
     if (characteristicId != null) {
@@ -1840,6 +1972,12 @@ class DiscoveredCharacteristic extends $pb.GeneratedMessage {
     }
     if (isIndicatable != null) {
       _result.isIndicatable = isIndicatable;
+    }
+    if (descriptorUuids != null) {
+      _result.descriptorUuids.addAll(descriptorUuids);
+    }
+    if (descriptors != null) {
+      _result.descriptors.addAll(descriptors);
     }
     return _result;
   }
@@ -1930,6 +2068,121 @@ class DiscoveredCharacteristic extends $pb.GeneratedMessage {
   $core.bool hasIsIndicatable() => $_has(6);
   @$pb.TagNumber(7)
   void clearIsIndicatable() => clearField(7);
+
+  @$pb.TagNumber(8)
+  $core.List<Uuid> get descriptorUuids => $_getList(7);
+
+  @$pb.TagNumber(9)
+  $core.List<DiscoveredDescriptor> get descriptors => $_getList(8);
+}
+
+class DiscoveredDescriptor extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'DiscoveredDescriptor', createEmptyInstance: create)
+    ..aOM<Uuid>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'descriptorId', protoName: 'descriptorId', subBuilder: Uuid.create)
+    ..aOM<Uuid>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'characteristicId', protoName: 'characteristicId', subBuilder: Uuid.create)
+    ..aOM<Uuid>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'serviceId', protoName: 'serviceId', subBuilder: Uuid.create)
+    ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isReadable', protoName: 'isReadable')
+    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isWritable', protoName: 'isWritable')
+    ..hasRequiredFields = false
+  ;
+
+  DiscoveredDescriptor._() : super();
+  factory DiscoveredDescriptor({
+    Uuid? descriptorId,
+    Uuid? characteristicId,
+    Uuid? serviceId,
+    $core.bool? isReadable,
+    $core.bool? isWritable,
+  }) {
+    final _result = create();
+    if (descriptorId != null) {
+      _result.descriptorId = descriptorId;
+    }
+    if (characteristicId != null) {
+      _result.characteristicId = characteristicId;
+    }
+    if (serviceId != null) {
+      _result.serviceId = serviceId;
+    }
+    if (isReadable != null) {
+      _result.isReadable = isReadable;
+    }
+    if (isWritable != null) {
+      _result.isWritable = isWritable;
+    }
+    return _result;
+  }
+  factory DiscoveredDescriptor.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory DiscoveredDescriptor.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  DiscoveredDescriptor clone() => DiscoveredDescriptor()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  DiscoveredDescriptor copyWith(void Function(DiscoveredDescriptor) updates) => super.copyWith((message) => updates(message as DiscoveredDescriptor)) as DiscoveredDescriptor; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static DiscoveredDescriptor create() => DiscoveredDescriptor._();
+  DiscoveredDescriptor createEmptyInstance() => create();
+  static $pb.PbList<DiscoveredDescriptor> createRepeated() => $pb.PbList<DiscoveredDescriptor>();
+  @$core.pragma('dart2js:noInline')
+  static DiscoveredDescriptor getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<DiscoveredDescriptor>(create);
+  static DiscoveredDescriptor? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Uuid get descriptorId => $_getN(0);
+  @$pb.TagNumber(1)
+  set descriptorId(Uuid v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasDescriptorId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearDescriptorId() => clearField(1);
+  @$pb.TagNumber(1)
+  Uuid ensureDescriptorId() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  Uuid get characteristicId => $_getN(1);
+  @$pb.TagNumber(2)
+  set characteristicId(Uuid v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasCharacteristicId() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearCharacteristicId() => clearField(2);
+  @$pb.TagNumber(2)
+  Uuid ensureCharacteristicId() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  Uuid get serviceId => $_getN(2);
+  @$pb.TagNumber(3)
+  set serviceId(Uuid v) { setField(3, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasServiceId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearServiceId() => clearField(3);
+  @$pb.TagNumber(3)
+  Uuid ensureServiceId() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $core.bool get isReadable => $_getBF(3);
+  @$pb.TagNumber(4)
+  set isReadable($core.bool v) { $_setBool(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasIsReadable() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearIsReadable() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get isWritable => $_getBF(4);
+  @$pb.TagNumber(5)
+  set isWritable($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasIsWritable() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearIsWritable() => clearField(5);
 }
 
 class Uuid extends $pb.GeneratedMessage {
